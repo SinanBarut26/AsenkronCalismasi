@@ -10,18 +10,33 @@ namespace ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var tekrar = string.Empty;
+            do
+            {
+                await IstekYolla().ConfigureAwait(false);
+                Console.Write("Başka bir sayı ile denemek ister misiniz?(e/h): ");
+                tekrar = Console.ReadLine();
+            } while (tekrar == "e" || tekrar == "E");
+        }
+        private static async Task IstekYolla()
+        {
+            Console.Write("Kaç istek göndermek istediğinizi giriniz: ");
             var numbers = new List<int>();
-            for (int i = 1; i <= 10; i++)
+            if (!int.TryParse(Console.ReadLine(), out var requestNumber))
+            {
+                Console.WriteLine("Sayı girmen gerekiyordu :/");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+
+            for (int i = 1; i <= requestNumber; i++)
             {
                 numbers.Add(i);
             }
-            // await AsyncRequestAsync(i).ConfigureAwait(false);
+
             var tasks = numbers.Select(n => AsyncRequestAsync(n)).ToList();
             await Task.WhenAll(tasks);
-            Console.ReadKey();
         }
-
         private static async Task AsyncRequestAsync(int requestId)
         {
             string baseUrl = "http://localhost:5000/Asenkron";
